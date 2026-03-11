@@ -187,6 +187,7 @@ def generate_launch_description():
                 os.path.join(robot_localization_pkg_dir, laser_odometry_launch_file_subpath)
             ),
             launch_arguments={'namespace': namespace,
+                              'use_sim_time': use_sim_time,
                               'use_TopicBasedSystem_hardware_interface': use_TopicBasedSystem_hardware_interface,
                              }.items()
         ),
@@ -220,7 +221,7 @@ def generate_launch_description():
             launch_arguments={'namespace': namespace,
                               'use_sim_time': use_sim_time,
                               'params_file':PathJoinSubstitution([robot_nav_pkg_dir, keepout_mask_params_file_subpath]),
-                              'mask_yaml_file':PathJoinSubstitution([robot_nav_pkg_dir,'maps', 'Table2025_keepout_mask.yaml']),
+                              'mask':PathJoinSubstitution([robot_nav_pkg_dir,'maps', 'Table2025_keepout_mask.yaml']),
                              }.items()
         ),
 
