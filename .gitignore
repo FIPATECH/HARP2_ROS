@@ -1,2 +1,10 @@
 # Ignore the .vscode folder
 .vscode/
+
+# ROS2 build artifacts
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+ros2_ws/build_docker/
+ros2_ws/install_docker/
+ros2_ws/log_docker/

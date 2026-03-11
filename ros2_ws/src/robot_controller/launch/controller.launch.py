@@ -17,12 +17,16 @@ def generate_launch_description():
     # Create the launch configuration variables
     namespace = LaunchConfiguration('namespace')
     use_TopicBasedSystem_hardware_interface = LaunchConfiguration('use_TopicBasedSystem_hardware_interface')
-
-    # Specify directory and path to file within package
-    if use_TopicBasedSystem_hardware_interface:
-        robot_controllers = PathJoinSubstitution([FindPackageShare("robot_controller"),"params","omnidirectional_controller.yaml"])
-    else:
-        robot_controllers = PathJoinSubstitution([FindPackageShare("robot_controller"),"params","omnidirectional_controller_sim.yaml"])
+    sim_robot_controllers = PathJoinSubstitution([
+        FindPackageShare("robot_controller"),
+        "params",
+        "omnidirectional_controller_sim.yaml",
+    ])
+    topic_based_robot_controllers = PathJoinSubstitution([
+        FindPackageShare("robot_controller"),
+        "params",
+        "omnidirectional_controller.yaml",
+    ])
 
         
     return LaunchDescription([
@@ -45,7 +49,7 @@ def generate_launch_description():
             executable="ros2_control_node",
             condition=IfCondition(use_TopicBasedSystem_hardware_interface), # Use ros2_control_node when using TopicBasedSystem because Gazebo plugin not running controller manager for us anymore
             parameters=[{"use_sim_time": False},
-                        robot_controllers,
+                        topic_based_robot_controllers,
             ],
             output="both",
             namespace=namespace,
@@ -60,7 +64,7 @@ def generate_launch_description():
                        "-c", "/controller_manager",
                        "-t", "joint_state_broadcaster/JointStateBroadcaster",
                       ],
-            parameters=[robot_controllers, 
+            parameters=[sim_robot_controllers,
             ],
             namespace=namespace,
         ),

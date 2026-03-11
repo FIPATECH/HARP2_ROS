@@ -1,4 +1,5 @@
 import os
+import socket
 
 from ament_index_python.packages import get_package_share_directory
 
@@ -15,15 +16,22 @@ from pathlib import Path
 import xacro
 
 
+def _get_free_port():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.bind(('', 0))
+        return sock.getsockname()[1]
+
+
 def generate_launch_description():
     
 	# Create the launch configuration variables    
     namespace = LaunchConfiguration('namespace')
     use_sim_time = LaunchConfiguration('use_sim_time')
     use_gazebo_gui = LaunchConfiguration('use_gazebo_gui')
-    gui_required = 'True' #Terminate launch script when gzclient (user interface window) exits
+    gui_required = 'False' # Keep simulation alive even if gzclient crashes
     server_required = 'True' #Terminate launch script when gzserver (Gazebo Server) exits
     world = LaunchConfiguration('world')
+    gazebo_master_uri = LaunchConfiguration('gazebo_master_uri')
     robot_name = LaunchConfiguration('robot_name')
     pose = {'x': LaunchConfiguration('x_pose'),
             'y': LaunchConfiguration('y_pose'),
@@ -36,7 +44,7 @@ def generate_launch_description():
     # Specify directory and path to file within package
     robot_sim_pkg_dir = get_package_share_directory('robot_sim')
     gazebo_ros_pkg_dir = get_package_share_directory('gazebo_ros')
-    wordl_file_subpath = 'world/Table2024_with_elements.world'
+    wordl_file_subpath = 'world/Table2025_with_elements.world'
     # Gazebo environment variables setup 
     gazebo_models_path = os.path.join(robot_sim_pkg_dir, 'models')
     os.environ['GAZEBO_MODEL_PATH'] = gazebo_models_path # Specification of additional model path to use "model://" in world file
@@ -60,10 +68,15 @@ def generate_launch_description():
             default_value='True',
             description='Use simulation (Gazebo) clock if true'
         ),
-	    DeclareLaunchArgument(
+        DeclareLaunchArgument(
             'world',
             default_value=PathJoinSubstitution([robot_sim_pkg_dir, wordl_file_subpath ]),
             description='world file'
+        ),
+        DeclareLaunchArgument(
+            'gazebo_master_uri',
+            default_value=f'http://127.0.0.1:{_get_free_port()}',
+            description='Gazebo master URI for this simulation instance'
         ),
             DeclareLaunchArgument(
             'robot_name',
@@ -90,6 +103,8 @@ def generate_launch_description():
             default_value='True',
             description='Use Gazebo'
         ),
+
+        SetEnvironmentVariable('GAZEBO_MASTER_URI', gazebo_master_uri),
 
 
         IncludeLaunchDescription(
