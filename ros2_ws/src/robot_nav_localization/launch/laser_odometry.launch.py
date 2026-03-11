@@ -21,6 +21,7 @@ def generate_launch_description():
     base_frame_id = LaunchConfiguration('base_frame_id')
     odom_frame_id = LaunchConfiguration('odom_frame_id')
     freq = LaunchConfiguration('freq')
+    use_sim_time = LaunchConfiguration('use_sim_time')
 
     return LaunchDescription([
 
@@ -55,6 +56,11 @@ def generate_launch_description():
             default_value='20.0',
             description='freq'
         ),
+        DeclareLaunchArgument(
+            'use_sim_time',
+            default_value='False',
+            description='Use simulation clock'
+        ),
 
 
         Node(
@@ -71,6 +77,7 @@ def generate_launch_description():
                         'odom_frame_id' : odom_frame_id,
                         'init_pose_from_topic' : '',
                         'freq' : freq,
+                        'use_sim_time': use_sim_time,
                        }],
             arguments=['--ros-args', '--log-level', 'ERROR'],
         ),

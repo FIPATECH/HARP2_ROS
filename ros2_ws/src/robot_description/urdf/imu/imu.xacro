@@ -2,6 +2,7 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" >
 
     <xacro:include filename="$(find robot_description)/urdf/meshes/standard_inertia_util.xacro" />
+    <xacro:arg name="enable_gazebo_imu" default="false"/>
 
     <joint name="imu_joint" type="fixed">
         <parent link="base_link"/>
@@ -28,26 +29,28 @@
         </xacro:inertial_box>
     </link>
 
-    <gazebo reference="bno085_imu">
-        <gravity>False</gravity>
-        <sensor name="imu_sensor" type="imu">
-        <always_on>true</always_on>
-        <update_rate>100</update_rate>
-        <visualize>true</visualize>
-        <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
-            <ros>
-                <remapping>~/out:=/imu_data</remapping>
-            </ros>
-            <bodyName>bno085_imu</bodyName>
-            <updateRateHZ>100</updateRateHZ>
-            <gaussianNoise>0.0</gaussianNoise>
-            <xyzOffset>0 0 0</xyzOffset>
-            <rpyOffset>0 0 0</rpyOffset>
-            <frameName>bno085_imu</frameName>
-            <initialOrientationAsReference>false</initialOrientationAsReference>
-        </plugin>
-        <pose>0 0 0 0 0 0</pose>
-        </sensor>
-    </gazebo>
+    <xacro:if value="$(arg enable_gazebo_imu)">
+        <gazebo reference="bno085_imu">
+            <gravity>False</gravity>
+            <sensor name="imu_sensor" type="imu">
+            <always_on>true</always_on>
+            <update_rate>100</update_rate>
+            <visualize>false</visualize>
+            <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+                <ros>
+                    <remapping>~/out:=/imu_data</remapping>
+                </ros>
+                <bodyName>bno085_imu</bodyName>
+                <updateRateHZ>100</updateRateHZ>
+                <gaussianNoise>0.0</gaussianNoise>
+                <xyzOffset>0 0 0</xyzOffset>
+                <rpyOffset>0 0 0</rpyOffset>
+                <frameName>bno085_imu</frameName>
+                <initialOrientationAsReference>false</initialOrientationAsReference>
+            </plugin>
+            <pose>0 0 0 0 0 0</pose>
+            </sensor>
+        </gazebo>
+    </xacro:if>
     
 </robot>
