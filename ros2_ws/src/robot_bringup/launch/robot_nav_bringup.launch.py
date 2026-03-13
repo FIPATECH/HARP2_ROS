@@ -44,7 +44,7 @@ def generate_launch_description():
     robot_slam_pkg_dir = get_package_share_directory('robot_slam')
     robot_nav_pkg_dir = get_package_share_directory('robot_nav')
     rviz_config_file_subpath = 'rviz/nav2.rviz'
-    urdf_file_subpath = 'urdf/robot.urdf.xacro'
+    urdf_file_subpath = 'urdf/HARP2_urdf/robot.urdf.xacro'
     robot_sim_launch_file_subpath = 'launch/robot_sim.launch.py'
     controller_launch_file_subpath = 'launch/controller.launch.py'
     robot_description_launch_file_subpath = 'launch/robot_description.launch.py'
